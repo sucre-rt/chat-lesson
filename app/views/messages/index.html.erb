@@ -1,0 +1,50 @@
+<div class="main">
+  <div class="chat" id="chat-index">
+    <div class="chat-container" id="chat-box">
+      <% unless @messages.blank? %>
+        <% @messages.each do |message| %>
+        	<div class="message-box" data-message-id=<%= message.id %>>
+            <div class="message-left">
+              <p class="message-info">
+                <%= message.user.name %>
+                <span>
+                  <%= message.created_at.strftime("%Y/%m/%d(%a) %H:%M") %>
+                </span>
+              </p>
+          		<p class="message-content"><%= message.content %></p>
+            </div>
+            <% if message.user.id == current_user.id %>
+              <div class="message-right">
+                <ul>
+                  <li>
+            		    <%= link_to 'edit', edit_message_path(message.id), method: :get %>
+                  </li>
+                  <li>
+                		<%= link_to 'delete', message_path(message.id), method: :delete %>
+                  </li>
+                </ul>
+              </div>
+            <% end %>
+      		</div>
+        <% end %>
+      <% else %>
+        <p class="no-data">No data yet.</p>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="chat-form">
+      <!-- ajax -->
+      <%= form_with model: @message, id: "new_message" do |f| %>
+      	<%= f.text_field :content, id: "chat-form"%>
+      	<%= f.submit 'SEND' %>
+      <% end %>
+  </div>
+</div>
+
+<!-- ActionCableの場合 -->
+<!-- <form id="new_message">
+	<input id="chat-form" data-behavior="chat_post" data-user="<%= current_user.id %>" type="text" name="message">
+	<button type="submit" id="send_btn">SEND</button>
+</form>
+ -->
